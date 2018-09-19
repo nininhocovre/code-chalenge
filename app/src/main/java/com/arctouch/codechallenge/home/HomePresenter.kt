@@ -19,6 +19,11 @@ class HomePresenter {
         viewContract = view
         if (Cache.genres.isEmpty()) {
             loadGenres()
+        } else if (adapter != null) {
+            viewContract?.let {
+                it.setAdapter(adapter!!)
+                it.showLoading(false)
+            }
         } else {
             loadMovies(1)
         }

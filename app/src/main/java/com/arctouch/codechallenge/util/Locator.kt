@@ -1,6 +1,7 @@
 package com.arctouch.codechallenge.util
 
 import com.arctouch.codechallenge.api.TmdbApi
+import com.arctouch.codechallenge.detail.DetailPresenter
 import com.arctouch.codechallenge.home.HomePresenter
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -11,6 +12,7 @@ class Locator {
 
     companion object {
         val homePresenter: HomePresenter by lazy { HomePresenter() }
+        val detailPresenter: DetailPresenter by lazy { DetailPresenter() }
 
         val api: TmdbApi = Retrofit.Builder()
                 .baseUrl(TmdbApi.URL)
