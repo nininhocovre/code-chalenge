@@ -28,7 +28,11 @@ class HomePresenter {
 
     fun viewConnected(view: HomeContract) {
         viewContract = view
-        loadMovies(1)
+        if (Cache.genres.isEmpty()) {
+            loadGenres()
+        } else {
+            loadMovies(1)
+        }
     }
 
     fun viewDisconnected() {
@@ -37,6 +41,16 @@ class HomePresenter {
 
     fun onItemClicked(movie: Movie) {
         viewContract?.startDetailActivity(movie)
+    }
+
+    private fun loadGenres() {
+        api.genres(TmdbApi.API_KEY, TmdbApi.DEFAULT_LANGUAGE)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    Cache.cacheGenres(it.genres)
+                    loadMovies(1)
+                }
     }
 
     private fun loadMovies(page: Long) {
