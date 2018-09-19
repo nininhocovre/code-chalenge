@@ -11,9 +11,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.movie_item.view.*
 
-class HomeAdapter(private val movies: List<Movie>) : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
+class HomeAdapter(private val movies: MutableList<Movie>, private val loadMoreMovies: LoadMoreMovies) : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
 
     private var listener: OnMovieClickedListener? = null
+    private var hasMoreItems = true
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -26,6 +27,7 @@ class HomeAdapter(private val movies: List<Movie>) : RecyclerView.Adapter<HomeAd
             itemView.setOnClickListener {
                 listener?.onMovieClicked(movie)
             }
+            itemView.loading.visibility = View.GONE
 
             Glide.with(itemView)
                 .load(movie.posterPath?.let { movieImageUrlBuilder.buildPosterUrl(it) })
@@ -39,9 +41,25 @@ class HomeAdapter(private val movies: List<Movie>) : RecyclerView.Adapter<HomeAd
         return ViewHolder(view)
     }
 
-    override fun getItemCount() = movies.size
+    override fun getItemCount() = movies.size + if (hasMoreItems) 1 else 0
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(movies[position], listener)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        if (position < movies.size) {
+            holder.bind(movies[position], listener)
+        } else if (hasMoreItems) {
+            // next items loading
+            loadMoreMovies.loadMore()
+            holder.itemView.loading.visibility = View.VISIBLE
+        }
+    }
+
+    fun addMovies(newMovies: List<Movie>?) {
+        if (newMovies != null) {
+            movies.addAll(newMovies)
+        } else {
+            hasMoreItems = false
+        }
+    }
 
     fun setOnMovieClickedListener(listener: OnMovieClickedListener) {
         this.listener = listener

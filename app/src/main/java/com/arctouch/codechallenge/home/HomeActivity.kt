@@ -42,6 +42,21 @@ class HomeActivity : BaseActivity(), HomeContract {
         recyclerView.adapter = adapter
     }
 
+    override fun adapterAddItems(newMovies: List<Movie>?) {
+        if (recyclerView.adapter is HomeAdapter) {
+            val adapter = recyclerView.adapter as HomeAdapter
+            val last = adapter.itemCount
+            val count = if (newMovies != null) newMovies.size else 0
+            adapter.addMovies(newMovies)
+            recyclerView.post {
+                adapter.notifyItemChanged(last - 1)
+                if (count > 0) {
+                    adapter.notifyItemRangeInserted(last, count)
+                }
+            }
+        }
+    }
+
     override fun startDetailActivity(movie: Movie) {
         val intent = Intent(this, DetailActivity::class.java)
         intent.putExtra(DetailActivity.MOVIE_ID, movie.id)
