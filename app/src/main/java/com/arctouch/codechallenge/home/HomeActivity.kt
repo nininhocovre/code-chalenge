@@ -2,15 +2,15 @@ package com.arctouch.codechallenge.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.arctouch.codechallenge.R
-import com.arctouch.codechallenge.base.BaseActivity
 import com.arctouch.codechallenge.detail.DetailActivity
 import com.arctouch.codechallenge.model.Movie
 import com.arctouch.codechallenge.util.Locator
 import kotlinx.android.synthetic.main.home_activity.*
 
-class HomeActivity : BaseActivity(), HomeContract {
+class HomeActivity : AppCompatActivity(), HomeContract {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
